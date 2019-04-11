@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/alexbrainman/odbc/api"
+	"github.com/watercraft/odbc/api"
 )
 
 // TODO(brainman): see if I could use SQLExecDirect anywhere
