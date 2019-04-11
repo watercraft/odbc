@@ -715,31 +715,30 @@ func TestMSSQLTypes(t *testing.T) {
 		tests = append(tests, typeMSSQL2008Tests...)
 	}
 	for _, r := range tests {
-		func() {
-			rows, err := db.Query(r.query)
+
+		rows, err := db.Query(r.query)
+		if err != nil {
+			t.Errorf("db.Query(%q) failed: %v", r.query, err)
+			continue
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var got interface{}
+			err := rows.Scan(&got)
 			if err != nil {
-				t.Errorf("db.Query(%q) failed: %v", r.query, err)
-				return
+				t.Errorf("rows.Scan for %q failed: %v", r.query, err)
+				continue
 			}
-			defer rows.Close()
-			for rows.Next() {
-				var got interface{}
-				err := rows.Scan(&got)
-				if err != nil {
-					t.Errorf("rows.Scan for %q failed: %v", r.query, err)
-					return
-				}
-				err = r.match(got)
-				if err != nil {
-					t.Errorf("test %q failed: %v", r.query, err)
-				}
-			}
-			err = rows.Err()
+			err = r.match(got)
 			if err != nil {
-				t.Error(err)
-				return
+				t.Errorf("test %q failed: %v", r.query, err)
 			}
-		}()
+		}
+		err = rows.Err()
+		if err != nil {
+			t.Error(err)
+			continue
+		}
 	}
 
 	for _, query := range typeTestsToFail {
