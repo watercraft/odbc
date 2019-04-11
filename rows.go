@@ -57,10 +57,10 @@ func (r *Rows) NextResultSet() error {
 	if IsError(ret) {
 		return NewError("SQLMoreResults", r.os.h)
 	}
-
-	err := r.os.BindColumns()
-	if err != nil {
-		return err
-	}
+	// TODO: !!!!!!!!!!!!!!! maybe need to call r.os.BindColumns here !!!!!
+	//err := r.os.BindColumns()
+	//if err != nil {
+	//	return err
+	//}
 	return nil
 }
